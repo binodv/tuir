@@ -22,7 +22,6 @@ _logger = logging.getLogger(__name__)
 
 
 class Content(object):
-
     def get(self, index, n_cols):
         """
         Grab the item at the given index, and format the text to fit a width of
@@ -108,7 +107,7 @@ class Content(object):
 
             # Add all of the attached replies to the front of the stack to be
             # parsed separately
-            if hasattr(item, 'replies'):
+            if hasattr(item, "replies"):
                 for n in item.replies:
                     n.nested_level = item.nested_level + 1
                 stack[0:0] = item.replies
@@ -128,80 +127,80 @@ class Content(object):
         """
 
         data = {}
-        data['object'] = comment
+        data["object"] = comment
 
         if isinstance(comment, praw.objects.MoreComments):
-            data['type'] = 'MoreComments'
-            data['level'] = comment.nested_level
-            data['count'] = comment.count
-            data['body'] = 'More comments'
-            data['hidden'] = True
+            data["type"] = "MoreComments"
+            data["level"] = comment.nested_level
+            data["count"] = comment.count
+            data["body"] = "More comments"
+            data["hidden"] = True
 
-        elif hasattr(comment, 'nested_level'):
-            author = getattr(comment, 'author', '[deleted]')
-            name = getattr(author, 'name', '[deleted]')
-            sub = getattr(comment, 'submission', '[deleted]')
-            sub_author = getattr(sub, 'author', '[deleted]')
-            sub_name = getattr(sub_author, 'name', '[deleted]')
-            flair = getattr(comment, 'author_flair_text', '')
-            permalink = getattr(comment, 'permalink', None)
-            stickied = getattr(comment, 'stickied', False)
+        elif hasattr(comment, "nested_level"):
+            author = getattr(comment, "author", "[deleted]")
+            name = getattr(author, "name", "[deleted]")
+            sub = getattr(comment, "submission", "[deleted]")
+            sub_author = getattr(sub, "author", "[deleted]")
+            sub_name = getattr(sub_author, "name", "[deleted]")
+            flair = getattr(comment, "author_flair_text", "")
+            permalink = getattr(comment, "permalink", None)
+            stickied = getattr(comment, "stickied", False)
 
-            data['type'] = 'Comment'
-            data['level'] = comment.nested_level
-            data['body'] = comment.body
-            data['html'] = comment.body_html
-            data['created'] = cls.humanize_timestamp(comment.created_utc)
-            data['score'] = '{0}'.format(
-                '-' if comment.score_hidden else comment.score)
-            data['author'] = name
-            data['is_author'] = (name == sub_name)
-            data['flair'] = flair
-            data['likes'] = comment.likes
-            data['gold'] = comment.gilded
-            data['permalink'] = permalink
-            data['stickied'] = stickied
-            data['hidden'] = False
-            data['saved'] = comment.saved
+            data["type"] = "Comment"
+            data["level"] = comment.nested_level
+            data["body"] = comment.body
+            data["html"] = comment.body_html
+            data["created"] = cls.humanize_timestamp(comment.created_utc)
+            data["score"] = "{0}".format("-" if comment.score_hidden else comment.score)
+            data["author"] = name
+            data["is_author"] = name == sub_name
+            data["flair"] = flair
+            data["likes"] = comment.likes
+            data["gold"] = comment.gilded
+            data["permalink"] = permalink
+            data["stickied"] = stickied
+            data["hidden"] = False
+            data["saved"] = comment.saved
             if comment.edited:
-                data['edited'] = '(edit {})'.format(
-                    cls.humanize_timestamp(comment.edited))
+                data["edited"] = "(edit {})".format(
+                    cls.humanize_timestamp(comment.edited)
+                )
             else:
-                data['edited'] = ''
+                data["edited"] = ""
         else:
             # Saved comments don't have a nested level and are missing a couple
             # of fields like ``submission``. As a result, we can only load a
             # subset of fields to avoid triggering a separate api call to load
             # the full comment.
-            author = getattr(comment, 'author', '[deleted]')
-            stickied = getattr(comment, 'stickied', False)
-            flair = getattr(comment, 'author_flair_text', '')
+            author = getattr(comment, "author", "[deleted]")
+            stickied = getattr(comment, "stickied", False)
+            flair = getattr(comment, "author_flair_text", "")
 
-            data['type'] = 'SavedComment'
-            data['level'] = None
-            data['title'] = '[Comment] {0}'.format(comment.body)
-            data['comments'] = None
-            data['url_full'] = comment._fast_permalink
-            data['url'] = comment._fast_permalink
-            data['permalink'] = comment._fast_permalink
-            data['nsfw'] = comment.over_18
-            data['subreddit'] = six.text_type(comment.subreddit)
-            data['url_type'] = 'selfpost'
-            data['score'] = '{0}'.format(
-                '-' if comment.score_hidden else comment.score)
-            data['likes'] = comment.likes
-            data['created'] = cls.humanize_timestamp(comment.created_utc)
-            data['saved'] = comment.saved
-            data['stickied'] = stickied
-            data['gold'] = comment.gilded
-            data['author'] = author
-            data['flair'] = flair
-            data['hidden'] = False
+            data["type"] = "SavedComment"
+            data["level"] = None
+            data["title"] = "[Comment] {0}".format(comment.body)
+            data["comments"] = None
+            data["url_full"] = comment._fast_permalink
+            data["url"] = comment._fast_permalink
+            data["permalink"] = comment._fast_permalink
+            data["nsfw"] = comment.over_18
+            data["subreddit"] = six.text_type(comment.subreddit)
+            data["url_type"] = "selfpost"
+            data["score"] = "{0}".format("-" if comment.score_hidden else comment.score)
+            data["likes"] = comment.likes
+            data["created"] = cls.humanize_timestamp(comment.created_utc)
+            data["saved"] = comment.saved
+            data["stickied"] = stickied
+            data["gold"] = comment.gilded
+            data["author"] = author
+            data["flair"] = flair
+            data["hidden"] = False
             if comment.edited:
-                data['edited'] = '(edit {})'.format(
-                    cls.humanize_timestamp(comment.edited))
+                data["edited"] = "(edit {})".format(
+                    cls.humanize_timestamp(comment.edited)
+                )
             else:
-                data['edited'] = ''
+                data["edited"] = ""
 
         return data
 
@@ -219,64 +218,62 @@ class Content(object):
                 external link.
         """
 
-        reddit_link = re.compile(
-            r'https?://(www\.)?(np\.)?redd(it\.com|\.it)/r/.*')
-        author = getattr(sub, 'author', '[deleted]')
-        name = getattr(author, 'name', '[deleted]')
-        flair = getattr(sub, 'link_flair_text', '')
+        reddit_link = re.compile(r"https?://(www\.)?(np\.)?redd(it\.com|\.it)/r/.*")
+        author = getattr(sub, "author", "[deleted]")
+        name = getattr(author, "name", "[deleted]")
+        flair = getattr(sub, "link_flair_text", "")
 
         data = {}
-        data['object'] = sub
-        data['type'] = 'Submission'
-        data['title'] = sub.title
-        data['text'] = sub.selftext
-        data['html'] = sub.selftext_html or ''
-        data['created'] = cls.humanize_timestamp(sub.created_utc)
-        data['created_long'] = cls.humanize_timestamp(sub.created_utc, True)
-        data['created_exact'] = cls.exact_timestamp(sub.created_utc)
-        data['comments'] = sub.num_comments
-        data['score'] = '{0}'.format('-' if sub.hide_score else sub.score)
-        data['author'] = name
-        data['permalink'] = sub.permalink
-        data['subreddit'] = six.text_type(sub.subreddit)
-        data['flair'] = '[{0}]'.format(flair.strip(' []')) if flair else ''
-        data['url_full'] = sub.url
-        data['likes'] = sub.likes
-        data['gold'] = sub.gilded
-        data['nsfw'] = sub.over_18
-        data['stickied'] = sub.stickied
-        data['hidden'] = sub.hidden
-        data['xpost_subreddit'] = None
-        data['index'] = None  # This is filled in later by the method caller
-        data['saved'] = sub.saved
+        data["object"] = sub
+        data["type"] = "Submission"
+        data["title"] = sub.title
+        data["text"] = sub.selftext
+        data["html"] = sub.selftext_html or ""
+        data["created"] = cls.humanize_timestamp(sub.created_utc)
+        data["created_long"] = cls.humanize_timestamp(sub.created_utc, True)
+        data["created_exact"] = cls.exact_timestamp(sub.created_utc)
+        data["comments"] = sub.num_comments
+        data["score"] = "{0}".format("-" if sub.hide_score else sub.score)
+        data["author"] = name
+        data["permalink"] = sub.permalink
+        data["subreddit"] = six.text_type(sub.subreddit)
+        data["flair"] = "[{0}]".format(flair.strip(" []")) if flair else ""
+        data["url_full"] = sub.url
+        data["likes"] = sub.likes
+        data["gold"] = sub.gilded
+        data["nsfw"] = sub.over_18
+        data["stickied"] = sub.stickied
+        data["hidden"] = sub.hidden
+        data["xpost_subreddit"] = None
+        data["index"] = None  # This is filled in later by the method caller
+        data["saved"] = sub.saved
         if sub.edited:
-            data['edited'] = '(edit {})'.format(
-                cls.humanize_timestamp(sub.edited))
-            data['edited_long'] = '(edit {})'.format(
-                cls.humanize_timestamp(sub.edited, True))
-            data['edited_exact'] = '(edit {})'.format(
-                cls.exact_timestamp(sub.edited))
+            data["edited"] = "(edit {})".format(cls.humanize_timestamp(sub.edited))
+            data["edited_long"] = "(edit {})".format(
+                cls.humanize_timestamp(sub.edited, True)
+            )
+            data["edited_exact"] = "(edit {})".format(cls.exact_timestamp(sub.edited))
         else:
-            data['edited'] = ''
-            data['edited_long'] = ''
-            data['edited_exact'] = ''
+            data["edited"] = ""
+            data["edited_long"] = ""
+            data["edited_exact"] = ""
 
-        if sub.url.split('/r/')[-1] == sub.permalink.split('/r/')[-1]:
-            data['url'] = 'self.{0}'.format(data['subreddit'])
-            data['url_type'] = 'selfpost'
+        if sub.url.split("/r/")[-1] == sub.permalink.split("/r/")[-1]:
+            data["url"] = "self.{0}".format(data["subreddit"])
+            data["url_type"] = "selfpost"
         elif reddit_link.match(sub.url):
             # Strip the subreddit name from the permalink to avoid having
             # submission.subreddit.url make a separate API call
-            url_parts = sub.url.split('/')
-            data['xpost_subreddit'] = url_parts[4]
-            data['url'] = 'self.{0}'.format(url_parts[4])
-            if 'comments' in url_parts:
-                data['url_type'] = 'x-post submission'
+            url_parts = sub.url.split("/")
+            data["xpost_subreddit"] = url_parts[4]
+            data["url"] = "self.{0}".format(url_parts[4])
+            if "comments" in url_parts:
+                data["url_type"] = "x-post submission"
             else:
-                data['url_type'] = 'x-post subreddit'
+                data["url_type"] = "x-post subreddit"
         else:
-            data['url'] = sub.url
-            data['url_type'] = 'external'
+            data["url"] = sub.url
+            data["url_type"] = "external"
 
         return data
 
@@ -288,15 +285,15 @@ class Content(object):
         """
 
         data = {}
-        data['object'] = subscription
+        data["object"] = subscription
         if isinstance(subscription, praw.objects.Multireddit):
-            data['type'] = 'Multireddit'
-            data['name'] = subscription.path
-            data['title'] = subscription.description_md
+            data["type"] = "Multireddit"
+            data["name"] = subscription.path
+            data["title"] = subscription.description_md
         else:
-            data['type'] = 'Subscription'
-            data['name'] = "/r/" + subscription.display_name
-            data['title'] = subscription.title
+            data["type"] = "Subscription"
+            data["name"] = "/r/" + subscription.display_name
+            data["title"] = subscription.title
 
         return data
 
@@ -309,41 +306,41 @@ class Content(object):
         contain special fields unique to messages and can't be parsed as normal
         comment objects.
         """
-        author = getattr(msg, 'author', None)
+        author = getattr(msg, "author", None)
 
         data = {}
-        data['object'] = msg
+        data["object"] = msg
 
         if isinstance(msg, praw.objects.Message):
-            data['type'] = 'Message'
-            data['level'] = msg.nested_level
-            data['distinguished'] = msg.distinguished
-            data['permalink'] = None
-            data['submission_permalink'] = None
-            data['subreddit_name'] = None
-            data['link_title'] = None
-            data['context'] = None
+            data["type"] = "Message"
+            data["level"] = msg.nested_level
+            data["distinguished"] = msg.distinguished
+            data["permalink"] = None
+            data["submission_permalink"] = None
+            data["subreddit_name"] = None
+            data["link_title"] = None
+            data["context"] = None
         else:
-            data['type'] = 'InboxComment'
-            data['level'] = 0
-            data['distinguished'] = None
-            data['permalink'] = msg._fast_permalink
-            data['submission_permalink'] = '/'.join(data['permalink'].split('/')[:-2])
-            data['subreddit_name'] = msg.subreddit_name_prefixed
-            data['link_title'] = msg.link_title
-            data['context'] = msg.context
+            data["type"] = "InboxComment"
+            data["level"] = 0
+            data["distinguished"] = None
+            data["permalink"] = msg._fast_permalink
+            data["submission_permalink"] = "/".join(data["permalink"].split("/")[:-2])
+            data["subreddit_name"] = msg.subreddit_name_prefixed
+            data["link_title"] = msg.link_title
+            data["context"] = msg.context
 
-        data['id'] = msg.id
-        data['subject'] = msg.subject
-        data['body'] = msg.body
-        data['html'] = msg.body_html
-        data['created'] = cls.humanize_timestamp(msg.created_utc)
-        data['created_long'] = cls.humanize_timestamp(msg.created_utc, True)
-        data['recipient'] = msg.dest
-        data['distinguished'] = msg.distinguished
-        data['author'] = author.name if author else '[deleted]'
-        data['is_new'] = msg.new
-        data['was_comment'] = msg.was_comment
+        data["id"] = msg.id
+        data["subject"] = msg.subject
+        data["body"] = msg.body
+        data["html"] = msg.body_html
+        data["created"] = cls.humanize_timestamp(msg.created_utc)
+        data["created_long"] = cls.humanize_timestamp(msg.created_utc, True)
+        data["recipient"] = msg.dest
+        data["distinguished"] = msg.distinguished
+        data["author"] = author.name if author else "[deleted]"
+        data["is_new"] = msg.new
+        data["was_comment"] = msg.was_comment
         return data
 
     @staticmethod
@@ -356,58 +353,58 @@ class Content(object):
 
         seconds = int(timedelta.total_seconds())
         if seconds < 60:
-            return 'moments ago' if verbose else '0min'
+            return "moments ago" if verbose else "0min"
 
         minutes = seconds // 60
         if minutes < 60:
             if verbose and minutes == 1:
-                return '1 minute ago'
+                return "1 minute ago"
             elif verbose:
-                return '%d minutes ago' % minutes
+                return "%d minutes ago" % minutes
             else:
-                return '%dmin' % minutes
+                return "%dmin" % minutes
 
         hours = minutes // 60
         if hours < 24:
             if verbose and hours == 1:
-                return '1 hour ago'
+                return "1 hour ago"
             elif verbose:
-                return '%d hours ago' % hours
+                return "%d hours ago" % hours
             else:
-                return '%dhr' % hours
+                return "%dhr" % hours
 
         days = hours // 24
         if days < 30:
             if verbose and days == 1:
-                return '1 day ago'
+                return "1 day ago"
             elif verbose:
-                return '%d days ago' % days
+                return "%d days ago" % days
             else:
-                return '%dday' % days
+                return "%dday" % days
 
         months = days // 31
         if months < 12:
             if verbose and months == 1:
-                return '1 month ago'
+                return "1 month ago"
             elif verbose:
-                return '%d months ago' % months
+                return "%d months ago" % months
             else:
-                return '%dmonth' % months
+                return "%dmonth" % months
 
         years = months // 12
         if verbose and years == 1:
-            return '1 year ago'
+            return "1 year ago"
         elif verbose:
-            return '%d years ago' % years
+            return "%d years ago" % years
         else:
-            return '%dyr' % years
+            return "%dyr" % years
 
     @staticmethod
     def exact_timestamp(utc_timestamp):
         dt = datetime.fromtimestamp(utc_timestamp)
 
         # https://stackoverflow.com/a/765990
-        yearsago = ((datetime.now() - dt).days / 365.2425)
+        yearsago = (datetime.now() - dt).days / 365.2425
 
         if yearsago > 0:
             return six.u(dt.strftime("%Y-%m-%d"))
@@ -425,7 +422,7 @@ class Content(object):
             # Wrap returns an empty list when paragraph is a newline. In order
             # to preserve newlines we substitute a list containing an empty
             # string.
-            lines = wrap(paragraph, width=width) or ['']
+            lines = wrap(paragraph, width=width) or [""]
             out.extend(lines)
         return out
 
@@ -435,14 +432,14 @@ class Content(object):
         Extract a list of hyperlinks from an HTML document.
         """
         links = []
-        soup = BeautifulSoup(html, 'html.parser')
-        for link in soup.findAll('a'):
-            href = link.get('href')
+        soup = BeautifulSoup(html, "html.parser")
+        for link in soup.findAll("a"):
+            href = link.get("href")
             if not href:
                 continue
-            if href.startswith('/'):
-                href = 'https://www.reddit.com' + href
-            links.append({'text': link.text, 'href': href})
+            if href.startswith("/"):
+                href = "https://www.reddit.com" + href
+            links.append({"text": link.text, "href": href})
         return links
 
 
@@ -452,15 +449,21 @@ class SubmissionContent(Content):
     list for repeat access.
     """
 
-    def __init__(self, submission, loader, indent_size=2, max_indent_level=8,
-                 order=None, max_comment_cols=120):
-
+    def __init__(
+        self,
+        submission,
+        loader,
+        indent_size=2,
+        max_indent_level=8,
+        order=None,
+        max_comment_cols=120,
+    ):
         submission_data = self.strip_praw_submission(submission)
         comments = self.flatten_comments(submission.comments)
 
         self.indent_size = indent_size
         self.max_indent_level = max_indent_level
-        self.name = submission_data['permalink']
+        self.name = submission_data["permalink"]
         self.order = order
         self.query = None
         self._loader = loader
@@ -470,24 +473,32 @@ class SubmissionContent(Content):
         self._max_comment_cols = max_comment_cols
 
     @classmethod
-    def from_url(cls, reddit, url, loader, indent_size=2, max_indent_level=8,
-                 order=None, max_comment_cols=120):
-
+    def from_url(
+        cls,
+        reddit,
+        url,
+        loader,
+        indent_size=2,
+        max_indent_level=8,
+        order=None,
+        max_comment_cols=120,
+    ):
         # Reddit forces SSL
-        url = url.replace('http:', 'https:')
+        url = url.replace("http:", "https:")
 
         # Sometimes reddit will return a 403 FORBIDDEN when trying to access an
         # np link while using OAUTH. Cause is unknown.
-        url = url.replace('https://np.', 'https://www.')
+        url = url.replace("https://np.", "https://www.")
 
         # Sometimes reddit will return internal links like "context" as
         # relative URLs.
-        if url.startswith('/'):
-            url = 'https://www.reddit.com' + url
+        if url.startswith("/"):
+            url = "https://www.reddit.com" + url
 
         submission = reddit.get_submission(url, comment_sort=order)
-        return cls(submission, loader, indent_size, max_indent_level, order,
-                   max_comment_cols)
+        return cls(
+            submission, loader, indent_size, max_indent_level, order, max_comment_cols
+        )
 
     @property
     def range(self):
@@ -504,22 +515,22 @@ class SubmissionContent(Content):
 
         elif index == -1:
             data = self._submission_data
-            data['split_title'] = self.wrap_text(data['title'], width=n_cols-2)
-            data['split_text'] = self.wrap_text(data['text'], width=n_cols-2)
-            data['n_rows'] = len(data['split_title'] + data['split_text']) + 5
-            data['h_offset'] = 0
+            data["split_title"] = self.wrap_text(data["title"], width=n_cols - 2)
+            data["split_text"] = self.wrap_text(data["text"], width=n_cols - 2)
+            data["n_rows"] = len(data["split_title"] + data["split_text"]) + 5
+            data["h_offset"] = 0
 
         else:
             data = self._comment_data[index]
-            indent_level = min(data['level'], self.max_indent_level)
-            data['h_offset'] = indent_level * self.indent_size
+            indent_level = min(data["level"], self.max_indent_level)
+            data["h_offset"] = indent_level * self.indent_size
 
-            if data['type'] == 'Comment':
-                width = min(n_cols - data['h_offset'], self._max_comment_cols)
-                data['split_body'] = self.wrap_text(data['body'], width=width)
-                data['n_rows'] = len(data['split_body']) + 1
+            if data["type"] == "Comment":
+                width = min(n_cols - data["h_offset"], self._max_comment_cols)
+                data["split_body"] = self.wrap_text(data["body"], width=width)
+                data["n_rows"] = len(data["split_body"]) + 1
             else:
-                data['n_rows'] = 1
+                data["n_rows"] = 1
 
         return data
 
@@ -533,45 +544,46 @@ class SubmissionContent(Content):
         """
         data = self.get(index)
 
-        if data['type'] == 'Submission':
+        if data["type"] == "Submission":
             # Can't hide the submission!
             pass
 
-        elif data['type'] == 'Comment':
+        elif data["type"] == "Comment":
             cache = [data]
             count = 1
             for d in self.iterate(index + 1, 1, n_cols):
-                if d['level'] <= data['level']:
+                if d["level"] <= data["level"]:
                     break
 
-                count += d.get('count', 1)
+                count += d.get("count", 1)
                 cache.append(d)
 
             comment = {
-                'type': 'HiddenComment',
-                'cache': cache,
-                'count': count,
-                'level': data['level'],
-                'body': 'Hidden',
-                'hidden': True}
+                "type": "HiddenComment",
+                "cache": cache,
+                "count": count,
+                "level": data["level"],
+                "body": "Hidden",
+                "hidden": True,
+            }
 
-            self._comment_data[index:index + len(cache)] = [comment]
+            self._comment_data[index : index + len(cache)] = [comment]
 
-        elif data['type'] == 'HiddenComment':
-            self._comment_data[index:index + 1] = data['cache']
+        elif data["type"] == "HiddenComment":
+            self._comment_data[index : index + 1] = data["cache"]
 
-        elif data['type'] == 'MoreComments':
-            with self._loader('Loading comments'):
+        elif data["type"] == "MoreComments":
+            with self._loader("Loading comments"):
                 # Undefined behavior if using a nested loader here
                 assert self._loader.depth == 1
-                comments = data['object'].comments(update=True)
+                comments = data["object"].comments(update=True)
             if not self._loader.exception:
-                comments = self.flatten_comments(comments, data['level'])
+                comments = self.flatten_comments(comments, data["level"])
                 comment_data = [self.strip_praw_comment(c) for c in comments]
-                self._comment_data[index:index + 1] = comment_data
+                self._comment_data[index : index + 1] = comment_data
 
         else:
-            raise ValueError('%s type not recognized' % data['type'])
+            raise ValueError("%s type not recognized" % data["type"])
 
 
 class SubredditContent(Content):
@@ -580,9 +592,16 @@ class SubredditContent(Content):
     list for repeat access.
     """
 
-    def __init__(self, config, name, submissions, loader, order=None,
-                 query=None, filter_nsfw=False):
-
+    def __init__(
+        self,
+        config,
+        name,
+        submissions,
+        loader,
+        order=None,
+        query=None,
+        filter_nsfw=False,
+    ):
         self.config = config
         self.name = name
         self.order = order
@@ -592,7 +611,7 @@ class SubredditContent(Content):
         self._submissions = submissions
         self._submission_data = []
 
-        if self.config['look_and_feel'] == 'default':
+        if self.config["look_and_feel"] == "default":
             self.max_title_rows = 4
         else:
             self.max_title_rows = 1
@@ -606,7 +625,7 @@ class SubredditContent(Content):
         except IndexError:
             full_name = self.name
             if self.order:
-                full_name += '/' + self.order
+                full_name += "/" + self.order
             raise exceptions.NoSubmissionsError(full_name)
 
     @classmethod
@@ -630,15 +649,15 @@ class SubredditContent(Content):
         # TODO: This desperately needs to be refactored
 
         # Strip leading, trailing, and redundant backslashes
-        parts = [seg for seg in name.strip(' /').split('/') if seg]
+        parts = [seg for seg in name.strip(" /").split("/") if seg]
 
         # Check for the resource type, assume /r/ as the default
-        if len(parts) >= 3 and parts[2] == 'm':
+        if len(parts) >= 3 and parts[2] == "m":
             # E.g. /u/civilization_phaze_3/m/multireddit ->
             #    resource_root = "u/civilization_phaze_3/m"
             #    parts = ["multireddit"]
-            resource_root, parts = '/'.join(parts[:3]), parts[3:]
-        elif len(parts) > 1 and parts[0] in ['r', 'u', 'user', 'domain']:
+            resource_root, parts = "/".join(parts[:3]), parts[3:]
+        elif len(parts) > 1 and parts[0] in ["r", "u", "user", "domain"]:
             # E.g. /u/civilization_phaze_3 ->
             #    resource_root = "u"
             #    parts = ["civilization_phaze_3"]
@@ -648,24 +667,24 @@ class SubredditContent(Content):
             #    parts = ["python", "top-week"]
             resource_root = parts.pop(0)
         else:
-            resource_root = 'r'
+            resource_root = "r"
 
-        if resource_root == 'user':
-            resource_root = 'u'
-        elif resource_root.startswith('user/'):
+        if resource_root == "user":
+            resource_root = "u"
+        elif resource_root.startswith("user/"):
             # Special check for multi-reddit resource roots
             # E.g.
             #     before: resource_root = "user/civilization_phaze_3/m"
             #     After:  resource_root = "u/civilization_phaze_3/m"
-            resource_root = 'u' + resource_root[4:]
+            resource_root = "u" + resource_root[4:]
 
         # The parts left should be in one of the following forms:
         #    [resource]
         #    [resource, order]
         #    [resource, user_room, order]
 
-        user_rooms = ['overview', 'submitted', 'comments']
-        private_user_rooms = ['upvoted', 'downvoted', 'hidden', 'saved']
+        user_rooms = ["overview", "submitted", "comments"]
+        private_user_rooms = ["upvoted", "downvoted", "hidden", "saved"]
         user_room = None
 
         if len(parts) == 1:
@@ -674,8 +693,11 @@ class SubredditContent(Content):
             #    resource = "python"
             #    resource_order = None
             resource, resource_order = parts[0], None
-        elif resource_root == 'u' and len(parts) in [2, 3] \
-                and parts[1] in user_rooms + private_user_rooms:
+        elif (
+            resource_root == "u"
+            and len(parts) in [2, 3]
+            and parts[1] in user_rooms + private_user_rooms
+        ):
             # E.g. /u/spez/submitted/top ->
             #    parts = ["spez", "submitted", "top"]
             #    resource = "spez"
@@ -690,120 +712,124 @@ class SubredditContent(Content):
             #    resource_order = "top"
             resource, resource_order = parts
         else:
-            raise InvalidSubreddit('`{}` is an invalid format'.format(name))
+            raise InvalidSubreddit("`{}` is an invalid format".format(name))
 
         if not resource:
             # Praw does not correctly handle empty strings
             # https://github.com/praw-dev/praw/issues/615
-            raise InvalidSubreddit('Subreddit cannot be empty')
+            raise InvalidSubreddit("Subreddit cannot be empty")
 
         # If the order was explicitly passed in, it will take priority over
         # the order that was extracted from the name
         order = order or resource_order
 
         display_order = order
-        display_name = '/'.join(['', resource_root, resource])
-        if user_room and resource_root == 'u':
-            display_name += '/' + user_room
+        display_name = "/".join(["", resource_root, resource])
+        if user_room and resource_root == "u":
+            display_name += "/" + user_room
 
         # Split the order from the period E.g. controversial-all, top-hour
-        if order and '-' in order:
-            order, period = order.split('-', 1)
+        if order and "-" in order:
+            order, period = order.split("-", 1)
         else:
             period = None
 
         if query:
             # The allowed orders for sorting search results are different
-            orders = ['relevance', 'top', 'comments', 'new', None]
-            period_allowed = ['top', 'comments']
+            orders = ["relevance", "top", "comments", "new", None]
+            period_allowed = ["top", "comments"]
         else:
-            orders = ['hot', 'top', 'rising', 'new', 'controversial', 'gilded', None]
-            period_allowed = ['top', 'controversial']
+            orders = ["hot", "top", "rising", "new", "controversial", "gilded", None]
+            period_allowed = ["top", "controversial"]
 
         if order not in orders:
-            raise InvalidSubreddit('Invalid order `%s`' % order)
-        if period not in ['all', 'day', 'hour', 'month', 'week', 'year', None]:
-            raise InvalidSubreddit('Invalid period `%s`' % period)
+            raise InvalidSubreddit("Invalid order `%s`" % order)
+        if period not in ["all", "day", "hour", "month", "week", "year", None]:
+            raise InvalidSubreddit("Invalid period `%s`" % period)
         if period and order not in period_allowed:
             raise InvalidSubreddit(
-                '`%s` order does not allow sorting by period' % order)
+                "`%s` order does not allow sorting by period" % order
+            )
 
         # On some objects, praw doesn't allow you to pass arguments for the
         # order and period. Instead you need to call special helper functions
         # such as Multireddit.get_controversial_from_year(). Build the method
         # name here for convenience.
         if period:
-            method_alias = 'get_{0}_from_{1}'.format(order, period)
+            method_alias = "get_{0}_from_{1}".format(order, period)
         elif order:
-            method_alias = 'get_{0}'.format(order)
+            method_alias = "get_{0}".format(order)
         else:
-            method_alias = 'get_hot'
+            method_alias = "get_hot"
 
         # Here's where we start to build the submission generators
         if query:
-            if resource_root == 'u':
-                search = '/r/{subreddit}/search'
-                author = reddit.user.name if resource == 'me' else resource
-                query = 'author:{0} {1}'.format(author, query)
+            if resource_root == "u":
+                search = "/r/{subreddit}/search"
+                author = reddit.user.name if resource == "me" else resource
+                query = "author:{0} {1}".format(author, query)
                 subreddit = None
             else:
-                search = resource_root + '/{subreddit}/search'
-                subreddit = None if resource == 'front' else resource
+                search = resource_root + "/{subreddit}/search"
+                subreddit = None if resource == "front" else resource
 
-            reddit.config.API_PATHS['search'] = search
-            submissions = reddit.search(query, subreddit=subreddit,
-                                        sort=order, period=period)
+            reddit.config.API_PATHS["search"] = search
+            submissions = reddit.search(
+                query, subreddit=subreddit, sort=order, period=period
+            )
 
-        elif resource_root == 'domain':
-            order = order or 'hot'
+        elif resource_root == "domain":
+            order = order or "hot"
             submissions = reddit.get_domain_listing(
-                resource, sort=order, period=period, limit=None)
+                resource, sort=order, period=period, limit=None
+            )
 
-        elif resource_root.endswith('/m'):
-            redditor = resource_root.split('/')[1]
+        elif resource_root.endswith("/m"):
+            redditor = resource_root.split("/")[1]
 
-            if redditor == 'me':
+            if redditor == "me":
                 if not reddit.is_oauth_session():
-                    raise exceptions.AccountError('Not logged in')
+                    raise exceptions.AccountError("Not logged in")
                 else:
                     redditor = reddit.user.name
                     display_name = display_name.replace(
-                        '/me/', '/{0}/'.format(redditor))
+                        "/me/", "/{0}/".format(redditor)
+                    )
 
             multireddit = reddit.get_multireddit(redditor, resource)
             submissions = getattr(multireddit, method_alias)(limit=None)
 
-        elif resource_root == 'u' and resource == 'me':
+        elif resource_root == "u" and resource == "me":
             if not reddit.is_oauth_session():
-                raise exceptions.AccountError('Not logged in')
+                raise exceptions.AccountError("Not logged in")
             else:
-                user_room = user_room or 'overview'
-                order = order or 'new'
-                period = period or 'all'
-                method = getattr(reddit.user, 'get_%s' % user_room)
+                user_room = user_room or "overview"
+                order = order or "new"
+                period = period or "all"
+                method = getattr(reddit.user, "get_%s" % user_room)
                 submissions = method(sort=order, time=period, limit=None)
 
-        elif resource_root == 'u':
-            user_room = user_room or 'overview'
+        elif resource_root == "u":
+            user_room = user_room or "overview"
             if user_room not in user_rooms:
                 # Tried to access a private room like "u/me/hidden" for a
                 # different redditor
-                raise InvalidSubreddit('Unavailable Resource')
-            order = order or 'new'
-            period = period or 'all'
+                raise InvalidSubreddit("Unavailable Resource")
+            order = order or "new"
+            period = period or "all"
             redditor = reddit.get_redditor(resource)
-            method = getattr(redditor, 'get_%s' % user_room)
+            method = getattr(redditor, "get_%s" % user_room)
             submissions = method(sort=order, time=period, limit=None)
 
-        elif resource == 'front':
-            if order in (None, 'hot'):
+        elif resource == "front":
+            if order in (None, "hot"):
                 submissions = reddit.get_front_page(limit=None)
             elif period:
                 # For the front page, praw makes you send the period as `t`
                 # instead of calling reddit.get_hot_from_week()
-                method_alias = 'get_{0}'.format(order)
+                method_alias = "get_{0}".format(order)
                 method = getattr(reddit, method_alias)
-                submissions = method(limit=None, params={'t': period})
+                submissions = method(limit=None, params={"t": period})
             else:
                 submissions = getattr(reddit, method_alias)(limit=None)
 
@@ -813,13 +839,20 @@ class SubredditContent(Content):
 
             # For special subreddits like /r/random we want to replace the
             # display name with the one returned by the request.
-            display_name = '/r/{0}'.format(subreddit.display_name)
+            display_name = "/r/{0}".format(subreddit.display_name)
 
-        filter_nsfw = (reddit.user and reddit.user.over_18 is False)
+        filter_nsfw = reddit.user and reddit.user.over_18 is False
 
         # We made it!
-        return cls(config, display_name, submissions, loader, order=display_order,
-                   query=query, filter_nsfw=filter_nsfw)
+        return cls(
+            config,
+            display_name,
+            submissions,
+            loader,
+            order=display_order,
+            query=query,
+            filter_nsfw=filter_nsfw,
+        )
 
     @property
     def range(self):
@@ -840,14 +873,13 @@ class SubredditContent(Content):
         nsfw_count = 0
         while index >= len(self._submission_data):
             try:
-                with self._loader('Loading more submissions'):
+                with self._loader("Loading more submissions"):
                     submission = next(self._submissions)
                 if self._loader.exception:
                     raise IndexError
             except StopIteration:
                 raise IndexError
             else:
-
                 # Skip NSFW posts based on the reddit user's profile settings.
                 # If we see 20+ NSFW posts at the beginning, assume the subreddit
                 # only has NSFW content and abort. This allows us to avoid making
@@ -857,45 +889,44 @@ class SubredditContent(Content):
                     nsfw_count += 1
                     if not self._submission_data and nsfw_count >= 20:
                         raise exceptions.SubredditError(
-                            'You must be over 18+ to view this subreddit')
+                            "You must be over 18+ to view this subreddit"
+                        )
                     continue
                 else:
                     nsfw_count = 0
 
-                if hasattr(submission, 'title'):
+                if hasattr(submission, "title"):
                     data = self.strip_praw_submission(submission)
                 else:
                     # when submission is a saved comment
                     data = self.strip_praw_comment(submission)
 
-                data['index'] = len(self._submission_data) + 1
+                data["index"] = len(self._submission_data) + 1
 
                 # Add the post number to the beginning of the title if necessary
-                if self.config['look_and_feel'] == 'default':
-                    data['title'] = '{0}. {1}'.format(data['index'], data['title'])
+                if self.config["look_and_feel"] == "default":
+                    data["title"] = "{0}. {1}".format(data["index"], data["title"])
 
                 self._submission_data.append(data)
 
         # Modifies the original dict, faster than copying
         data = self._submission_data[index]
 
-        if self.config['look_and_feel'] == 'compact':
-            data['n_rows'] = 2
-        elif self.config['subreddit_format']:
-            data['n_rows'] = self.config['subreddit_format'].count('\n') + 1
+        if self.config["look_and_feel"] == "compact":
+            data["n_rows"] = 2
+        elif self.config["subreddit_format"]:
+            data["n_rows"] = self.config["subreddit_format"].count("\n") + 1
         else:
-            data['split_title'] = self.wrap_text(data['title'], width=n_cols)
-            data['n_rows'] = len(data['split_title']) + 3
+            data["split_title"] = self.wrap_text(data["title"], width=n_cols)
+            data["n_rows"] = len(data["split_title"]) + 3
 
-        data['h_offset'] = 0
+        data["h_offset"] = 0
 
         return data
 
 
 class SubscriptionContent(Content):
-
     def __init__(self, name, subscriptions, loader):
-
         self.name = name
         self.order = None
         self.query = None
@@ -906,31 +937,31 @@ class SubscriptionContent(Content):
         try:
             self.get(0)
         except IndexError:
-            raise exceptions.SubscriptionError('No content')
+            raise exceptions.SubscriptionError("No content")
 
         # Load 1024 subscriptions up front (one http request's worth)
         # For most people this should be all of their subscriptions. This
         # allows the user to jump to the end of the page with `G`.
-        if name != 'Popular Subreddits':
+        if name != "Popular Subreddits":
             try:
                 self.get(1023)
             except IndexError:
                 pass
 
     @classmethod
-    def from_user(cls, reddit, loader, content_type='subreddit'):
-        if content_type == 'subreddit':
-            name = 'My Subreddits'
+    def from_user(cls, reddit, loader, content_type="subreddit"):
+        if content_type == "subreddit":
+            name = "My Subreddits"
             items = reddit.get_my_subreddits(limit=None)
-        elif content_type == 'multireddit':
-            name = 'My Multireddits'
+        elif content_type == "multireddit":
+            name = "My Multireddits"
             # Multireddits are returned as a list
             items = iter(reddit.get_my_multireddits())
-        elif content_type == 'popular':
-            name = 'Popular Subreddits'
+        elif content_type == "popular":
+            name = "Popular Subreddits"
             items = reddit.get_popular_subreddits(limit=None)
         else:
-            raise exceptions.SubscriptionError('Invalid type %s' % content_type)
+            raise exceptions.SubscriptionError("Invalid type %s" % content_type)
 
         return cls(name, items, loader)
 
@@ -949,7 +980,7 @@ class SubscriptionContent(Content):
 
         while index >= len(self._subscription_data):
             try:
-                with self._loader('Loading content'):
+                with self._loader("Loading content"):
                     subscription = next(self._subscriptions)
                 if self._loader.exception:
                     raise IndexError
@@ -960,19 +991,18 @@ class SubscriptionContent(Content):
                 self._subscription_data.append(data)
 
         data = self._subscription_data[index]
-        data['split_title'] = self.wrap_text(data['title'], width=n_cols)
-        data['n_rows'] = len(data['split_title']) + 1
-        data['h_offset'] = 0
+        data["split_title"] = self.wrap_text(data["title"], width=n_cols)
+        data["n_rows"] = len(data["split_title"]) + 1
+        data["h_offset"] = 0
 
         return data
 
 
 class InboxContent(Content):
-
-    def __init__(self, order, content_generator, loader,
-                 indent_size=2, max_indent_level=8):
-
-        self.name = 'My Inbox'
+    def __init__(
+        self, order, content_generator, loader, indent_size=2, max_indent_level=8
+    ):
+        self.name = "My Inbox"
         self.order = order
         self.query = None
         self.indent_size = indent_size
@@ -984,29 +1014,29 @@ class InboxContent(Content):
         try:
             self.get(0)
         except IndexError:
-            if order == 'all':
-                raise exceptions.InboxError('Empty Inbox')
+            if order == "all":
+                raise exceptions.InboxError("Empty Inbox")
             else:
-                raise exceptions.InboxError('Empty Inbox [%s]' % order)
+                raise exceptions.InboxError("Empty Inbox [%s]" % order)
 
     @classmethod
-    def from_user(cls, reddit, loader, order='all'):
-        if order == 'all':
+    def from_user(cls, reddit, loader, order="all"):
+        if order == "all":
             items = reddit.get_inbox(limit=None)
-        elif order == 'unread':
+        elif order == "unread":
             items = reddit.get_unread(limit=None)
-        elif order == 'messages':
+        elif order == "messages":
             items = reddit.get_messages(limit=None)
-        elif order == 'comments':
+        elif order == "comments":
             items = reddit.get_comment_replies(limit=None)
-        elif order == 'posts':
+        elif order == "posts":
             items = reddit.get_post_replies(limit=None)
-        elif order == 'mentions':
+        elif order == "mentions":
             items = reddit.get_mentions(limit=None)
-        elif order == 'sent':
+        elif order == "sent":
             items = reddit.get_sent(limit=None)
         else:
-            raise exceptions.InboxError('Invalid order %s' % order)
+            raise exceptions.InboxError("Invalid order %s" % order)
 
         return cls(order, items, loader)
 
@@ -1025,7 +1055,7 @@ class InboxContent(Content):
 
         while index >= len(self._content_data):
             try:
-                with self._loader('Loading content'):
+                with self._loader("Loading content"):
                     item = next(self._content_generator)
                 if self._loader.exception:
                     raise IndexError
@@ -1044,11 +1074,11 @@ class InboxContent(Content):
                     self._content_data.append(data)
 
         data = self._content_data[index]
-        indent_level = min(data['level'], self.max_indent_level)
-        data['h_offset'] = indent_level * self.indent_size
-        width = n_cols - data['h_offset']
-        data['split_body'] = self.wrap_text(data['body'], width=width)
-        data['n_rows'] = len(data['split_body']) + 2
+        indent_level = min(data["level"], self.max_indent_level)
+        data["h_offset"] = indent_level * self.indent_size
+        width = n_cols - data["h_offset"]
+        data["split_body"] = self.wrap_text(data["body"], width=width)
+        data["n_rows"] = len(data["split_body"]) + 2
 
         return data
 
@@ -1067,7 +1097,6 @@ class RequestHeaderRateLimiter(DefaultHandler):
     """
 
     def __init__(self):
-
         # In PRAW's convention, these variables were bound to the
         # class so the cache could be shared among all of the ``reddit``
         # instances. In TUIR's use-case there is only ever a single reddit
@@ -1115,17 +1144,31 @@ class RequestHeaderRateLimiter(DefaultHandler):
         will be cutoff until the period resets.
         """
 
-        if 'x-ratelimit-remaining' not in response_headers:
+        if "x-ratelimit-remaining" not in response_headers:
             # This could be because the API returned an error response, or it
             # could be because we're using something like read-only credentials
             # which Reddit doesn't appear to care about rate limiting.
             return
 
-        self.used = float(response_headers['x-ratelimit-used'])
-        self.remaining = float(response_headers['x-ratelimit-remaining'])
-        self.seconds_to_reset = int(response_headers['x-ratelimit-reset'])
-        _logger.debug('Rate limit: %s used, %s remaining, %s reset',
-                      self.used, self.remaining, self.seconds_to_reset)
+        _logger.debug(
+            "used: %s | remaining: %s | reset : %s"
+            % (
+                response_headers["x-ratelimit-used"],
+                response_headers["x-ratelimit-remaining"],
+                response_headers["x-ratelimit-reset"],
+            )
+        )
+        self.used = float(response_headers["x-ratelimit-used"].split(", ")[0])
+        self.remaining = float(response_headers["x-ratelimit-remaining"].split(", ")[0])
+        self.seconds_to_reset = int(
+            response_headers["x-ratelimit-reset"].split(", ")[0]
+        )
+        _logger.debug(
+            "Rate limit: %s used, %s remaining, %s reset",
+            self.used,
+            self.remaining,
+            self.seconds_to_reset,
+        )
 
         if self.remaining <= 0:
             self.next_request_timestamp = time.time() + self.seconds_to_reset
@@ -1178,7 +1221,7 @@ class RequestHeaderRateLimiter(DefaultHandler):
             url, items = _cache_key
             _cache_key = (url, (items[0], items[1], items[3], items[4]))
 
-        if kwargs['request'].method != 'GET':
+        if kwargs["request"].method != "GET":
             # I [michael-lazar] added this check for RTV, I have no idea
             # why PRAW would ever want to cache POST/PUT/DELETE requests
             _cache_ignore = True
@@ -1208,11 +1251,13 @@ class RequestHeaderRateLimiter(DefaultHandler):
         """
 
         settings = self.http.merge_environment_settings(
-            request.url, proxies, False, verify, None)
+            request.url, proxies, False, verify, None
+        )
 
         self._delay()
         response = self.http.send(
-            request, timeout=timeout, allow_redirects=False, **settings)
+            request, timeout=timeout, allow_redirects=False, **settings
+        )
         self._update(response.headers)
 
         return response
