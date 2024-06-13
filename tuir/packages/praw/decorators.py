@@ -27,18 +27,13 @@ import decorator
 import six
 import sys
 from functools import wraps
-from .decorator_helpers import (
-    _get_captcha,
-    _is_mod_of_all,
-    _make_func_args
-)
+from .decorator_helpers import _get_captcha, _is_mod_of_all, _make_func_args
 from . import errors
 from warnings import filterwarnings, warn
 
 
 # Enable deprecation warnings from this module
-filterwarnings('default', category=DeprecationWarning,
-               module='^praw\.decorators$')
+filterwarnings("default", category=DeprecationWarning, module=r"^praw\.decorators$")
 
 
 def alias_function(function, class_name):
@@ -50,33 +45,40 @@ def alias_function(function, class_name):
     a RedditContent object that maps to the corresponding BaseReddit function.
 
     """
+
     @wraps(function)
     def wrapped(self, *args, **kwargs):
         func_args = _make_func_args(function)
-        if 'subreddit' in func_args and func_args.index('subreddit') != 1:
+        if "subreddit" in func_args and func_args.index("subreddit") != 1:
             # Only happens for search
-            kwargs['subreddit'] = self
+            kwargs["subreddit"] = self
             return function(self.reddit_session, *args, **kwargs)
         else:
             return function(self.reddit_session, self, *args, **kwargs)
+
     # Only grab the short-line doc and add a link to the complete doc
     if wrapped.__doc__ is not None:
-        wrapped.__doc__ = wrapped.__doc__.split('\n', 1)[0]
-        wrapped.__doc__ += ('\n\nSee :meth:`.{0}.{1}` for complete usage. '
-                            'Note that you should exclude the subreddit '
-                            'parameter when calling this convenience method.'
-                            .format(class_name, function.__name__))
+        wrapped.__doc__ = wrapped.__doc__.split("\n", 1)[0]
+        wrapped.__doc__ += (
+            "\n\nSee :meth:`.{0}.{1}` for complete usage. "
+            "Note that you should exclude the subreddit "
+            "parameter when calling this convenience method.".format(
+                class_name, function.__name__
+            )
+        )
     # Don't hide from sphinx as this is a parameter modifying decorator
     return wrapped
 
 
-def deprecated(msg=''):
+def deprecated(msg=""):
     """Deprecate decorated method."""
+
     @decorator.decorator
     def wrap(function, *args, **kwargs):
-        if not kwargs.pop('disable_warning', False):
+        if not kwargs.pop("disable_warning", False):
             warn(msg, DeprecationWarning)
         return function(*args, **kwargs)
+
     return wrap
 
 
@@ -86,7 +88,7 @@ def limit_chars(function, *args, **kwargs):
     output_chars_limit = args[0].reddit_session.config.output_chars_limit
     output_string = function(*args, **kwargs)
     if -1 < output_chars_limit < len(output_string):
-        output_string = output_string[:output_chars_limit - 3] + '...'
+        output_string = output_string[: output_chars_limit - 3] + "..."
     return output_string
 
 
@@ -101,8 +103,8 @@ def oauth_generator(function, *args, **kwargs):
     Returned data is not modified.
 
     """
-    if getattr(args[0], '_use_oauth', False):
-        kwargs['_use_oauth'] = True
+    if getattr(args[0], "_use_oauth", False):
+        kwargs["_use_oauth"] = True
     return function(*args, **kwargs)
 
 
@@ -121,24 +123,22 @@ def raise_api_exceptions(function, *args, **kwargs):
         try:  # Attempt to convert v1 errors into older format (for now)
             data = exc._raw.json()  # pylint: disable=W0212
             assert len(data) == 2
-            return_value = {'errors': [(data['reason'],
-                                        data['explanation'], '')]}
+            return_value = {"errors": [(data["reason"], data["explanation"], "")]}
         except Exception:
             raise exc
     if isinstance(return_value, dict):
-        if return_value.get('error') == 304:  # Not modified exception
+        if return_value.get("error") == 304:  # Not modified exception
             raise errors.NotModified(return_value)
-        elif return_value.get('errors'):
+        elif return_value.get("errors"):
             error_list = []
-            for error_type, msg, value in return_value['errors']:
+            for error_type, msg, value in return_value["errors"]:
                 if error_type in errors.ERROR_MAPPING:
-                    if error_type == 'RATELIMIT':
+                    if error_type == "RATELIMIT":
                         args[0].evict(args[1])
                     error_class = errors.ERROR_MAPPING[error_type]
                 else:
                     error_class = errors.APIException
-                error_list.append(error_class(error_type, msg, value,
-                                              return_value))
+                error_list.append(error_class(error_type, msg, value, return_value))
             if len(error_list) == 1:
                 raise error_list[0]
             else:
@@ -149,11 +149,11 @@ def raise_api_exceptions(function, *args, **kwargs):
 @decorator.decorator
 def require_captcha(function, *args, **kwargs):
     """Return a decorator for methods that require captchas."""
-    raise_captcha_exception = kwargs.pop('raise_captcha_exception', False)
+    raise_captcha_exception = kwargs.pop("raise_captcha_exception", False)
     captcha_id = None
 
     # Get a handle to the reddit session
-    if hasattr(args[0], 'reddit_session'):
+    if hasattr(args[0], "reddit_session"):
         reddit_session = args[0].reddit_session
     else:
         reddit_session = args[0]
@@ -169,22 +169,26 @@ def require_captcha(function, *args, **kwargs):
                 # needs to go. If we put the captcha in the **kwargs,
                 # we get a TypeError for having two values of the same param.
                 func_args = _make_func_args(function)
-                if 'captcha' in func_args:
-                    captcha_index = func_args.index('captcha')
+                if "captcha" in func_args:
+                    captcha_index = func_args.index("captcha")
                     args = list(args)
                     args[captcha_index] = captcha_answer
                 else:
-                    kwargs['captcha'] = captcha_answer
+                    kwargs["captcha"] = captcha_answer
             return function(*args, **kwargs)
         except errors.InvalidCaptcha as exception:
-            if raise_captcha_exception or \
-                    not hasattr(sys.stdin, 'closed') or sys.stdin.closed:
+            if (
+                raise_captcha_exception
+                or not hasattr(sys.stdin, "closed")
+                or sys.stdin.closed
+            ):
                 raise
-            captcha_id = exception.response['captcha']
+            captcha_id = exception.response["captcha"]
 
 
-def restrict_access(scope, mod=None, login=None, oauth_only=False,
-                    generator_called=False):
+def restrict_access(
+    scope, mod=None, login=None, oauth_only=False, generator_called=False
+):
     """Restrict function access unless the user has the necessary permissions.
 
     Raises one of the following exceptions when appropriate:
@@ -219,10 +223,10 @@ def restrict_access(scope, mod=None, login=None, oauth_only=False,
 
     """
     if not scope and oauth_only:
-        raise TypeError('`scope` must be set when `oauth_only` is set')
+        raise TypeError("`scope` must be set when `oauth_only` is set")
 
-    mod = mod is not False and (mod or scope and 'mod' in scope)
-    login = login is not False and (login or mod or scope and scope != 'read')
+    mod = mod is not False and (mod or scope and "mod" in scope)
+    login = login is not False and (login or mod or scope and scope != "read")
 
     @decorator.decorator
     def wrap(function, *args, **kwargs):
@@ -234,23 +238,22 @@ def restrict_access(scope, mod=None, login=None, oauth_only=False,
         # to import the types at runtime (decorators is used by all the
         # types).
         if mod:
-            if hasattr(args[0], 'reddit_session'):
+            if hasattr(args[0], "reddit_session"):
                 # Defer access until necessary for RedditContentObject.
                 # This is because scoped sessions may not require this
                 # attribute to exist, thus it might not be set.
                 from .objects import Subreddit
-                subreddit = args[0] if isinstance(args[0], Subreddit) \
-                    else False
+
+                subreddit = args[0] if isinstance(args[0], Subreddit) else False
             else:
-                subreddit = kwargs.get(
-                    'subreddit', args[1] if len(args) > 1 else None)
+                subreddit = kwargs.get("subreddit", args[1] if len(args) > 1 else None)
                 if subreddit is None:  # Try the default value
                     defaults = six.get_function_defaults(function)
                     subreddit = defaults[0] if defaults else None
         else:
             subreddit = None
 
-        obj = getattr(args[0], 'reddit_session', args[0])
+        obj = getattr(args[0], "reddit_session", args[0])
         # This function sets _use_oauth for one time use only.
         # Verify that statement is actually true.
         assert not obj._use_oauth  # pylint: disable=W0212
@@ -266,8 +269,7 @@ def restrict_access(scope, mod=None, login=None, oauth_only=False,
                 subreddit = args[0].subreddit
             if mod and not _is_mod_of_all(obj.user, subreddit):
                 if scope:
-                    raise errors.ModeratorOrScopeRequired(
-                        function.__name__, scope)
+                    raise errors.ModeratorOrScopeRequired(function.__name__, scope)
                 raise errors.ModeratorRequired(function.__name__)
         elif login:
             if scope:
@@ -277,6 +279,7 @@ def restrict_access(scope, mod=None, login=None, oauth_only=False,
             return function(*args, **kwargs)
         finally:
             obj._use_oauth = False  # pylint: disable=W0212
+
     return wrap
 
 
@@ -288,7 +291,9 @@ def require_oauth(function, *args, **kwargs):
 
     """
     if not args[0].has_oauth_app_info:
-        err_msg = ("The OAuth app config parameters client_id, client_secret "
-                   "and redirect_url must be specified to use this function.")
+        err_msg = (
+            "The OAuth app config parameters client_id, client_secret "
+            "and redirect_url must be specified to use this function."
+        )
         raise errors.OAuthAppRequired(err_msg)
     return function(*args, **kwargs)
