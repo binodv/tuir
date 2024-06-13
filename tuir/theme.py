@@ -17,116 +17,119 @@ _logger = logging.getLogger(__name__)
 
 
 class Theme(object):
-
     ATTRIBUTE_CODES = {
-        '-': None,
-        '': None,
-        'normal': curses.A_NORMAL,
-        'bold': curses.A_BOLD,
-        'reverse': curses.A_REVERSE,
-        'underline': curses.A_UNDERLINE,
-        'standout': curses.A_STANDOUT
+        "-": None,
+        "": None,
+        "normal": curses.A_NORMAL,
+        "bold": curses.A_BOLD,
+        "reverse": curses.A_REVERSE,
+        "underline": curses.A_UNDERLINE,
+        "standout": curses.A_STANDOUT,
     }
 
     COLOR_CODES = {
-        '-': None,
-        'default': -1,
-        'black': curses.COLOR_BLACK,
-        'red': curses.COLOR_RED,
-        'green': curses.COLOR_GREEN,
-        'yellow': curses.COLOR_YELLOW,
-        'blue': curses.COLOR_BLUE,
-        'magenta': curses.COLOR_MAGENTA,
-        'cyan': curses.COLOR_CYAN,
-        'light_gray': curses.COLOR_WHITE,
-        'dark_gray': 8,
-        'bright_red': 9,
-        'bright_green': 10,
-        'bright_yellow': 11,
-        'bright_blue': 12,
-        'bright_magenta': 13,
-        'bright_cyan': 14,
-        'white': 15,
+        "-": None,
+        "default": -1,
+        "black": curses.COLOR_BLACK,
+        "red": curses.COLOR_RED,
+        "green": curses.COLOR_GREEN,
+        "yellow": curses.COLOR_YELLOW,
+        "blue": curses.COLOR_BLUE,
+        "magenta": curses.COLOR_MAGENTA,
+        "cyan": curses.COLOR_CYAN,
+        "light_gray": curses.COLOR_WHITE,
+        "dark_gray": 8,
+        "bright_red": 9,
+        "bright_green": 10,
+        "bright_yellow": 11,
+        "bright_blue": 12,
+        "bright_magenta": 13,
+        "bright_cyan": 14,
+        "white": 15,
     }
 
     for i in range(256):
-        COLOR_CODES['ansi_{0}'.format(i)] = i
+        COLOR_CODES["ansi_{0}".format(i)] = i
 
     # For compatibility with as many terminals as possible, the default theme
     # can only use the 8 basic colors with the default color as the background
     DEFAULT_THEME = {
-        'modifiers': {
-            'Normal':                (-1,                   -1,   curses.A_NORMAL),
-            'Selected':              (-1,                   -1,   curses.A_NORMAL),
-            'SelectedCursor':        (-1,                   -1,   curses.A_REVERSE),
+        "modifiers": {
+            "Normal": (-1, -1, curses.A_NORMAL),
+            "Selected": (-1, -1, curses.A_NORMAL),
+            "SelectedCursor": (-1, -1, curses.A_REVERSE),
         },
-        'page': {
-            'TitleBar':              (curses.COLOR_CYAN,    None, curses.A_BOLD | curses.A_REVERSE),
-            'OrderBar':              (curses.COLOR_YELLOW,  None, curses.A_BOLD),
-            'OrderBarHighlight':     (curses.COLOR_YELLOW,  None, curses.A_BOLD | curses.A_REVERSE),
-            'HelpBar':               (curses.COLOR_CYAN,    None, curses.A_BOLD | curses.A_REVERSE),
-            'Prompt':                (curses.COLOR_CYAN,    None, curses.A_BOLD | curses.A_REVERSE),
-            'NoticeInfo':            (None,                 None, curses.A_BOLD),
-            'NoticeLoading':         (None,                 None, curses.A_BOLD),
-            'NoticeError':           (None,                 None, curses.A_BOLD),
-            'NoticeSuccess':         (None,                 None, curses.A_BOLD),
+        "page": {
+            "TitleBar": (curses.COLOR_CYAN, None, curses.A_BOLD | curses.A_REVERSE),
+            "OrderBar": (curses.COLOR_YELLOW, None, curses.A_BOLD),
+            "OrderBarHighlight": (
+                curses.COLOR_YELLOW,
+                None,
+                curses.A_BOLD | curses.A_REVERSE,
+            ),
+            "HelpBar": (curses.COLOR_CYAN, None, curses.A_BOLD | curses.A_REVERSE),
+            "Prompt": (curses.COLOR_CYAN, None, curses.A_BOLD | curses.A_REVERSE),
+            "NoticeInfo": (None, None, curses.A_BOLD),
+            "NoticeLoading": (None, None, curses.A_BOLD),
+            "NoticeError": (None, None, curses.A_BOLD),
+            "NoticeSuccess": (None, None, curses.A_BOLD),
         },
         # Fields that might be highlighted by the "SelectedCursor" element
-        'cursor': {
-            'CursorBlock':           (None,                 None, None),
-            'CursorBar1':            (curses.COLOR_MAGENTA, None, None),
-            'CursorBar2':            (curses.COLOR_CYAN,    None, None),
-            'CursorBar3':            (curses.COLOR_GREEN,   None, None),
-            'CursorBar4':            (curses.COLOR_YELLOW,  None, None),
+        "cursor": {
+            "CursorBlock": (None, None, None),
+            "CursorBar1": (curses.COLOR_MAGENTA, None, None),
+            "CursorBar2": (curses.COLOR_CYAN, None, None),
+            "CursorBar3": (curses.COLOR_GREEN, None, None),
+            "CursorBar4": (curses.COLOR_YELLOW, None, None),
         },
         # Fields that might be highlighted by the "Selected" element
-        'normal': {
-            'CommentAuthor':         (curses.COLOR_BLUE,    None, curses.A_BOLD),
-            'CommentAuthorSelf':     (curses.COLOR_GREEN,   None, curses.A_BOLD),
-            'CommentCount':          (None,                 None, None),
-            'CommentText':           (None,                 None, None),
-            'Created':               (None,                 None, None),
-            'Downvote':              (curses.COLOR_RED,     None, curses.A_BOLD),
-            'Gold':                  (curses.COLOR_YELLOW,  None, curses.A_BOLD),
-            'HiddenCommentExpand':   (None,                 None, curses.A_BOLD),
-            'HiddenCommentText':     (None,                 None, None),
-            'MultiredditName':       (curses.COLOR_YELLOW,  None, curses.A_BOLD),
-            'MultiredditText':       (None,                 None, None),
-            'NeutralVote':           (None,                 None, curses.A_BOLD),
-            'NSFW':                  (curses.COLOR_RED,     None, curses.A_BOLD | curses.A_REVERSE),
-            'Saved':                 (curses.COLOR_GREEN,   None, None),
-            'Hidden':                (curses.COLOR_YELLOW,  None, None),
-            'Score':                 (None,                 None, None),
-            'Separator':             (None,                 None, curses.A_BOLD),
-            'Stickied':              (curses.COLOR_GREEN,   None, None),
-            'SubscriptionName':      (curses.COLOR_YELLOW,  None, curses.A_BOLD),
-            'SubscriptionText':      (None,                 None, None),
-            'SubmissionAuthor':      (curses.COLOR_GREEN,   None, curses.A_BOLD),
-            'SubmissionFlair':       (curses.COLOR_RED,     None, None),
-            'SubmissionSubreddit':   (curses.COLOR_YELLOW,  None, None),
-            'SubmissionText':        (None,                 None, None),
-            'SubmissionTitle':       (None,                 None, curses.A_BOLD),
-            'SubmissionTitleSeen':   (None,                 None, None),
-            'Upvote':                (curses.COLOR_GREEN,   None, curses.A_BOLD),
-            'Link':                  (curses.COLOR_BLUE,    None, curses.A_UNDERLINE),
-            'LinkSeen':              (curses.COLOR_MAGENTA, None, curses.A_UNDERLINE),
-            'UserFlair':             (curses.COLOR_YELLOW,  None, curses.A_BOLD),
-            'New':                   (curses.COLOR_RED,     None, curses.A_BOLD),
-            'Distinguished':         (curses.COLOR_RED,     None, curses.A_BOLD),
-            'MessageSubject':        (curses.COLOR_BLUE,    None, curses.A_BOLD),
-            'MessageLink':           (curses.COLOR_MAGENTA, None, curses.A_BOLD),
-            'MessageAuthor':         (curses.COLOR_GREEN,   None, curses.A_BOLD),
-            'MessageSubreddit':      (curses.COLOR_YELLOW,  None, None),
-            'MessageText':           (None,                 None, None),
-
-        }
+        "normal": {
+            "CommentAuthor": (curses.COLOR_BLUE, None, curses.A_BOLD),
+            "CommentAuthorSelf": (curses.COLOR_GREEN, None, curses.A_BOLD),
+            "CommentCount": (None, None, None),
+            "CommentText": (None, None, None),
+            "Created": (None, None, None),
+            "Downvote": (curses.COLOR_RED, None, curses.A_BOLD),
+            "Gold": (curses.COLOR_YELLOW, None, curses.A_BOLD),
+            "HiddenCommentExpand": (None, None, curses.A_BOLD),
+            "HiddenCommentText": (None, None, None),
+            "MultiredditName": (curses.COLOR_YELLOW, None, curses.A_BOLD),
+            "MultiredditText": (None, None, None),
+            "NeutralVote": (None, None, curses.A_BOLD),
+            "NSFW": (curses.COLOR_RED, None, curses.A_BOLD | curses.A_REVERSE),
+            "Saved": (curses.COLOR_GREEN, None, None),
+            "Hidden": (curses.COLOR_YELLOW, None, None),
+            "Score": (None, None, None),
+            "Separator": (None, None, curses.A_BOLD),
+            "Stickied": (curses.COLOR_GREEN, None, None),
+            "SubscriptionName": (curses.COLOR_YELLOW, None, curses.A_BOLD),
+            "SubscriptionText": (None, None, None),
+            "SubmissionAuthor": (curses.COLOR_GREEN, None, curses.A_BOLD),
+            "SubmissionFlair": (curses.COLOR_RED, None, None),
+            "SubmissionSubreddit": (curses.COLOR_YELLOW, None, None),
+            "SubmissionText": (None, None, None),
+            "SubmissionTitle": (None, None, curses.A_BOLD),
+            "SubmissionTitleSeen": (None, None, None),
+            "Upvote": (curses.COLOR_GREEN, None, curses.A_BOLD),
+            "Link": (curses.COLOR_BLUE, None, curses.A_UNDERLINE),
+            "LinkSeen": (curses.COLOR_MAGENTA, None, curses.A_UNDERLINE),
+            "UserFlair": (curses.COLOR_YELLOW, None, curses.A_BOLD),
+            "New": (curses.COLOR_RED, None, curses.A_BOLD),
+            "Distinguished": (curses.COLOR_RED, None, curses.A_BOLD),
+            "MessageSubject": (curses.COLOR_BLUE, None, curses.A_BOLD),
+            "MessageLink": (curses.COLOR_MAGENTA, None, curses.A_BOLD),
+            "MessageAuthor": (curses.COLOR_GREEN, None, curses.A_BOLD),
+            "MessageSubreddit": (curses.COLOR_YELLOW, None, None),
+            "MessageText": (None, None, None),
+        },
     }
 
-    DEFAULT_ELEMENTS = {k: v for group in DEFAULT_THEME.values()
-                        for k, v in group.items()}
+    DEFAULT_ELEMENTS = {
+        k: v for group in DEFAULT_THEME.values() for k, v in group.items()
+    }
 
     # The SubmissionPage uses this to determine which color bar to use
-    CURSOR_BARS = ['CursorBar1', 'CursorBar2', 'CursorBar3', 'CursorBar4']
+    CURSOR_BARS = ["CursorBar1", "CursorBar2", "CursorBar3", "CursorBar4"]
 
     def __init__(self, name=None, source=None, elements=None, use_color=True):
         """
@@ -142,14 +145,14 @@ class Theme(object):
                 format as Theme.DEFAULT_THEME.
         """
 
-        if source not in (None, 'built-in', 'preset', 'installed', 'custom'):
-            raise ValueError('Invalid source')
+        if source not in (None, "built-in", "preset", "installed", "custom"):
+            raise ValueError("Invalid source")
 
         if name is None and source is None:
-            name = 'default' if use_color else 'monochrome'
-            source = 'built-in'
+            name = "default" if use_color else "monochrome"
+            source = "built-in"
         elif name is None or source is None:
-            raise ValueError('Must specify both `name` and `source`, or neither one')
+            raise ValueError("Must specify both `name` and `source`, or neither one")
 
         self.name = name
         self.source = source
@@ -171,27 +174,27 @@ class Theme(object):
             if key not in elements:
                 elements[key] = (None, None, None)
 
-        self._set_fallback(elements, 'Normal', (-1, -1, curses.A_NORMAL))
-        self._set_fallback(elements, 'Selected', 'Normal')
-        self._set_fallback(elements, 'SelectedCursor', 'Normal')
+        self._set_fallback(elements, "Normal", (-1, -1, curses.A_NORMAL))
+        self._set_fallback(elements, "Selected", "Normal")
+        self._set_fallback(elements, "SelectedCursor", "Normal")
 
         # Create the "Selected" versions of elements, which are prefixed with
         # the @ symbol. For example, "@CommentText" represents how comment
         # text is formatted when it is highlighted by the cursor.
-        for key in self.DEFAULT_THEME['normal']:
-            dest = '@{0}'.format(key)
-            self._set_fallback(elements, key, 'Selected', dest)
-        for key in self.DEFAULT_THEME['cursor']:
-            dest = '@{0}'.format(key)
-            self._set_fallback(elements, key, 'SelectedCursor', dest)
+        for key in self.DEFAULT_THEME["normal"]:
+            dest = "@{0}".format(key)
+            self._set_fallback(elements, key, "Selected", dest)
+        for key in self.DEFAULT_THEME["cursor"]:
+            dest = "@{0}".format(key)
+            self._set_fallback(elements, key, "SelectedCursor", dest)
 
         # Fill in the ``None`` values for all of the elements with normal text
-        for key in self.DEFAULT_THEME['normal']:
-            self._set_fallback(elements, key, 'Normal')
-        for key in self.DEFAULT_THEME['cursor']:
-            self._set_fallback(elements, key, 'Normal')
-        for key in self.DEFAULT_THEME['page']:
-            self._set_fallback(elements, key, 'Normal')
+        for key in self.DEFAULT_THEME["normal"]:
+            self._set_fallback(elements, key, "Normal")
+        for key in self.DEFAULT_THEME["cursor"]:
+            self._set_fallback(elements, key, "Normal")
+        for key in self.DEFAULT_THEME["page"]:
+            self._set_fallback(elements, key, "Normal")
 
         self.elements = elements
 
@@ -220,7 +223,7 @@ class Theme(object):
 
     @property
     def display_string(self):
-        return '{0} ({1})'.format(self.name, self.source)
+        return "{0} ({1})".format(self.name, self.source)
 
     def bind_curses(self):
         """
@@ -256,11 +259,13 @@ class Theme(object):
         Returns the curses attribute code for the given element.
         """
         if self._attribute_map is None:
-            raise RuntimeError('Attempted to access theme attribute before '
-                               'calling initialize_curses_theme()')
+            raise RuntimeError(
+                "Attempted to access theme attribute before "
+                "calling initialize_curses_theme()"
+            )
 
         if selected or self._selected:
-            element = '@{0}'.format(element)
+            element = "@{0}".format(element)
 
         return self._attribute_map[element]
 
@@ -302,7 +307,7 @@ class Theme(object):
             """
             if os.path.isdir(path):
                 for filename in sorted(os.listdir(path)):
-                    if not filename.endswith('.cfg'):
+                    if not filename.endswith(".cfg"):
                         continue
 
                     filepath = os.path.join(path, filename)
@@ -316,8 +321,8 @@ class Theme(object):
                         themes.append(theme)
 
         themes.extend([Theme(use_color=True), Theme(use_color=False)])
-        load_themes(Config.DEFAULT_THEMES, 'preset')
-        load_themes(path, 'installed')
+        load_themes(Config.DEFAULT_THEMES, "preset")
+        load_themes(path, "installed")
 
         return themes, errors
 
@@ -329,38 +334,38 @@ class Theme(object):
         This is intended to be used as a command-line utility, outside of the
         main curses display loop.
         """
-        themes, errors = cls.list_themes(path=path + '/')
+        themes, errors = cls.list_themes(path=path + "/")
 
-        print('\nInstalled ({0}):'.format(path))
-        installed = [t for t in themes if t.source == 'installed']
+        print("\nInstalled ({0}):".format(path))
+        installed = [t for t in themes if t.source == "installed"]
         if installed:
             for theme in installed:
-                line = '    {0:<20}[requires {1} colors]'
+                line = "    {0:<20}[requires {1} colors]"
                 print(line.format(theme.name, theme.required_colors))
         else:
-            print('    (empty)')
+            print("    (empty)")
 
-        print('\nPresets:')
-        preset = [t for t in themes if t.source == 'preset']
+        print("\nPresets:")
+        preset = [t for t in themes if t.source == "preset"]
         for theme in preset:
-            line = '    {0:<20}[requires {1} colors]'
+            line = "    {0:<20}[requires {1} colors]"
             print(line.format(theme.name, theme.required_colors))
 
-        print('\nBuilt-in:')
-        built_in = [t for t in themes if t.source == 'built-in']
+        print("\nBuilt-in:")
+        built_in = [t for t in themes if t.source == "built-in"]
         for theme in built_in:
-            line = '    {0:<20}[requires {1} colors]'
+            line = "    {0:<20}[requires {1} colors]"
             print(line.format(theme.name, theme.required_colors))
 
         if errors:
-            print('\nWARNING: Some files encountered errors:')
+            print("\nWARNING: Some files encountered errors:")
             for (source, name), error in errors.items():
-                theme_info = '({0}) {1}'.format(source, name)
+                theme_info = "({0}) {1}".format(source, name)
                 # Align multi-line error messages with the right column
-                err_message = six.text_type(error).replace('\n', '\n' + ' ' * 20)
-                print('    {0:<20}{1}'.format(theme_info, err_message))
+                err_message = six.text_type(error).replace("\n", "\n" + " " * 20)
+                print("    {0:<20}{1}".format(theme_info, err_message))
 
-        print('')
+        print("")
 
     @classmethod
     def from_name(cls, name, path=Config.THEMES):
@@ -372,15 +377,15 @@ class Theme(object):
         """
 
         if os.path.isfile(name):
-            return cls.from_file(name, 'custom')
+            return cls.from_file(name, "custom")
 
-        filename = os.path.join(path, '{0}.cfg'.format(name))
+        filename = os.path.join(path, "{0}.cfg".format(name))
         if os.path.isfile(filename):
-            return cls.from_file(filename, 'installed')
+            return cls.from_file(filename, "installed")
 
-        filename = os.path.join(Config.DEFAULT_THEMES, '{0}.cfg'.format(name))
+        filename = os.path.join(Config.DEFAULT_THEMES, "{0}.cfg".format(name))
         if os.path.isfile(filename):
-            return cls.from_file(filename, 'preset')
+            return cls.from_file(filename, "preset")
 
         raise ConfigError('Could not find theme named "{0}"'.format(name))
 
@@ -393,30 +398,30 @@ class Theme(object):
             filename: The name of the filename to load.
             source: A description of where the theme was loaded from.
         """
-        _logger.info('Loading theme %s', filename)
+        _logger.info("Loading theme %s", filename)
 
         try:
             config = configparser.ConfigParser()
             config.optionxform = six.text_type  # Preserve case
-            with codecs.open(filename, encoding='utf-8') as fp:
-                config.readfp(fp)
+            # with codecs.open(filename, encoding='utf-8') as fp:
+            config.read(filename)
         except configparser.ParsingError as e:
             raise ConfigError(e.message)
 
-        if not config.has_section('theme'):
+        if not config.has_section("theme"):
             raise ConfigError(
-                'Error loading {0}:\n'
-                '    missing [theme] section'.format(filename))
+                "Error loading {0}:\n" "    missing [theme] section".format(filename)
+            )
 
         theme_name = os.path.basename(filename)
         theme_name, _ = os.path.splitext(theme_name)
 
         elements = {}
-        for element, line in config.items('theme'):
+        for element, line in config.items("theme"):
             if element not in cls.DEFAULT_ELEMENTS:
                 # Could happen if using a new config with an older version
                 # of the software
-                _logger.info('Skipping element %s', element)
+                _logger.info("Skipping element %s", element)
                 continue
             elements[element] = cls._parse_line(element, line, filename)
 
@@ -433,37 +438,45 @@ class Theme(object):
 
         items = line.split()
         if len(items) == 2:
-            fg, bg, attrs = items[0], items[1], ''
+            fg, bg, attrs = items[0], items[1], ""
         elif len(items) == 3:
             fg, bg, attrs = items
         else:
             raise ConfigError(
-                'Error loading {0}, invalid line:\n'
-                '    {1} = {2}'.format(filename, element, line))
+                "Error loading {0}, invalid line:\n" "    {1} = {2}".format(
+                    filename, element, line
+                )
+            )
 
-        if fg.startswith('#'):
+        if fg.startswith("#"):
             fg = cls.rgb_to_ansi(fg)
-        if bg.startswith('#'):
+        if bg.startswith("#"):
             bg = cls.rgb_to_ansi(bg)
 
         if fg not in cls.COLOR_CODES:
             raise ConfigError(
-                'Error loading {0}, invalid <foreground>:\n'
-                '    {1} = {2}'.format(filename, element, line))
+                "Error loading {0}, invalid <foreground>:\n" "    {1} = {2}".format(
+                    filename, element, line
+                )
+            )
         fg_code = cls.COLOR_CODES[fg]
 
         if bg not in cls.COLOR_CODES:
             raise ConfigError(
-                'Error loading {0}, invalid <background>:\n'
-                '    {1} = {2}'.format(filename, element, line))
+                "Error loading {0}, invalid <background>:\n" "    {1} = {2}".format(
+                    filename, element, line
+                )
+            )
         bg_code = cls.COLOR_CODES[bg]
 
         attrs_code = curses.A_NORMAL
-        for attr in attrs.split('+'):
+        for attr in attrs.split("+"):
             if attr not in cls.ATTRIBUTE_CODES:
                 raise ConfigError(
-                    'Error loading {0}, invalid <attributes>:\n'
-                    '    {1} = {2}'.format(filename, element, line))
+                    "Error loading {0}, invalid <attributes>:\n" "    {1} = {2}".format(
+                        filename, element, line
+                    )
+                )
             attr_code = cls.ATTRIBUTE_CODES[attr]
             if attr_code is None:
                 attrs_code = None
@@ -489,7 +502,8 @@ class Theme(object):
         elements[dest_field] = (
             attrs[0] if attrs[0] is not None else fallback[0],
             attrs[1] if attrs[1] is not None else fallback[1],
-            attrs[2] if attrs[2] is not None else fallback[2])
+            attrs[2] if attrs[2] is not None else fallback[2],
+        )
 
     @staticmethod
     def rgb_to_ansi(color):
@@ -507,7 +521,7 @@ class Theme(object):
             https://github.com/chadj2/bash-ui/blob/master/COLORS.md
         """
 
-        if color[0] != '#' or len(color) != 7:
+        if color[0] != "#" or len(color) != 7:
             return None
 
         try:
@@ -515,7 +529,7 @@ class Theme(object):
             g = round(int(color[3:5], 16) / 51.0)
             b = round(int(color[5:7], 16) / 51.0)
             n = int(36 * r + 6 * g + b + 16)
-            return 'ansi_{0:d}'.format(n)
+            return "ansi_{0:d}".format(n)
         except ValueError:
             return None
 
